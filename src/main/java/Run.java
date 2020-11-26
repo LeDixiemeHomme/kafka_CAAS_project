@@ -1,5 +1,8 @@
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 public class Run {
@@ -7,32 +10,95 @@ public class Run {
 
         String brokers = null;
         String topicName = null;
+        String partitions = null;
+        String startOption = null;
 
         try{
-            brokers = Utils.getAppBrokers();
-            topicName= Utils.getAppTopicName();
+            brokers = Utils.getPropertyValueByName("brokers");
+            topicName= Utils.getPropertyValueByName("topicName");
+            partitions= Utils.getPropertyValueByName("partitions");
+            startOption= Utils.getPropertyValueByName("startOption");
         }
         catch (IOException ioe){
             ioe.printStackTrace();
         }
 
-        switch(args[0].toLowerCase()) {
+        switch(getArgumentValue(args,"--action").toLowerCase()) {
             case "produce":
+                if(topicName ==null){
+                    try {
+                        topicName = getArgumentValue(args,"--topicName").toLowerCase();
+                        SimpleProducer.produce(brokers, topicName);
+                    } catch (Exception e){
+                        Message.NoTopicNameArgMessage();
+                        break;
+                    }
+                }
+
                 SimpleProducer.produce(brokers, topicName);
                 break;
             case "consume":
-                // Either a groupId was passed in, or we need a random one
-                String groupId;
-                if (args.length == 4) {
-                    groupId = args[3];
-                } else {
-                    groupId = UUID.randomUUID().toString();
+                int[] partitionNumbers = null;
+                if(topicName == null){
+                    try {
+                        topicName = getArgumentValue(args,"--topicName").toLowerCase();
+                    } catch (Exception e){
+                        Message.NoTopicNameArgMessage();
+                        Message.consumeMessage();
+                        break;
+                    }
                 }
-                SimpleConsumer.consume(brokers, topicName);
+
+                if(startOption == null){
+                    try {
+                        startOption = getArgumentValue(args,"--startOption").toLowerCase();
+                    } catch (Exception e){
+                        Message.NoStartOptionArgMessage();
+                        Message.consumeMessage();
+                        break;
+                    }
+                }
+
+                if(partitions == null){
+                    try {
+                        partitionNumbers = extractNumber(getArgumentValue(args,"--partitions"));
+                    } catch (Exception e){
+                        Message.NoPartitionsArgMessage();
+                        Message.consumeMessage();
+                        break;
+                    }
+                } else {
+                    partitionNumbers = extractNumber(partitions);
+                }
+
+                SimpleConsumer.consume(brokers, topicName, startOption, partitionNumbers);
+                break;
+            case "help":
+                Message.helpMessage();
                 break;
             default:
-                SimpleProducer.produce(brokers, topicName);
+                Message.helpMessage();
                 break;
         }
+    }
+
+    public static String getArgumentValue(String[] args, String value){
+        if(Arrays.asList(args).contains(value)){
+            return args[Arrays.asList(args).indexOf(value)+1];
+        } else {
+            return null;
+        }
+    }
+
+    public static int[] extractNumber(String str) {
+        int i = 0;
+        String[] stringTab = str.toLowerCase().split(",");
+        int[] tab = new int[stringTab.length];
+
+        for (String value: str.toLowerCase().split(",")) {
+            tab[i] = Integer.parseInt(value);
+            i++;
+        }
+        return tab;
     }
 }

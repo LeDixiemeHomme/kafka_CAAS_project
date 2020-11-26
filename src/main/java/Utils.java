@@ -26,28 +26,14 @@ public class Utils {
         return mainProperties;
     }
 
-    public static String getAppBrokers() throws IOException {
-
-        String versionString = null;
-
-        Properties mainProperties = getProperties();
-
-        //retrieve the property we are intrested, the app.version
-        versionString = mainProperties.getProperty("brokers");
-
-        return versionString;
-    }
-
-    public static String getAppTopicName() throws IOException {
-
-        String versionString = null;
+    public static String getPropertyValueByName(String name) throws IOException {
+        String value = null;
 
         Properties mainProperties = getProperties();
 
-        //retrieve the property we are intrested, the app.version
-        versionString = mainProperties.getProperty("topicName");
+        value = mainProperties.getProperty(name);
 
-        return versionString;
+        return value;
     }
 
 }

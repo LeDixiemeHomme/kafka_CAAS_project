@@ -19,16 +19,6 @@ public class SimpleProducer {
 
     public static void produce(String brokers, String topicName) throws Exception{
 
-//        String brokers = null;
-//        String topicName = null;
-
-//        try{
-//            brokers = Utils.getAppBrokers();
-//            topicName= Utils.getAppTopicName();
-//        }
-//        catch (IOException ioe) {
-//            ioe.printStackTrace();
-//        }
         System.out.println("brokers = " + brokers);
         System.out.println("topicName = " + topicName);
 
