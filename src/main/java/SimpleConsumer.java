@@ -38,10 +38,12 @@ public class SimpleConsumer {
 
         switch(startOption) {
             case "from-beginning":
+                System.out.println("From beginning mode choose for this consumer.");
                 consumer.assign(partSet);
                 consumer.seekToBeginning(partSet);
                 break;
             case "regular":
+                System.out.println("Regular mode choose for this consumer.");
                 consumer.assign(partSet);
                 consumer.seekToEnd(partSet);
                 break;
@@ -79,19 +81,25 @@ public class SimpleConsumer {
                         if(line.equals("exit")){
                             System.out.println("The offset won't be changed for the partition " + partition.toString() + " .");
                             break;
-                        } else if (Long.parseLong(line) <= endOffset && Long.parseLong(line) >= beginningOffset){
-                            try
-                            {
-                                consumer.seek(partition, Long.parseLong(line));
+                        } else if (Tools.isNumeric(line)) {
+                            if (Long.parseLong(line) <= endOffset && Long.parseLong(line) >= beginningOffset){
+                                try
+                                {
+                                    consumer.seek(partition, Long.parseLong(line));
+                                }
+                                catch (Exception ex)
+                                {
+                                    System.out.print(ex.getMessage());
+                                    throw new IOException(ex.toString());
+                                }
+                                exit = true;
+                            } else {
+                                System.out.println("The number typed is out of range.");
+                                System.out.println("Try again or type exit.");
                             }
-                            catch (Exception ex)
-                            {
-                                System.out.print(ex.getMessage());
-                                throw new IOException(ex.toString());
-                            }
-                            exit = true;
                         } else {
-                            System.out.println("Wrong type of value typed !");
+                            System.out.println("The value typed is neither \"exit\" nor a number.");
+                            System.out.println("Try again or type exit.");
                         }
                     }
                 }

@@ -12,19 +12,19 @@ public class Run {
 
         try{
             brokers = PropertiesParser.getPropertyValueByName("brokers");
-            topicName= PropertiesParser.getPropertyValueByName("topicName");
-            partitions= PropertiesParser.getPropertyValueByName("partitions");
-            startOption= PropertiesParser.getPropertyValueByName("startOption");
+//            topicName= PropertiesParser.getPropertyValueByName("topicName");
+//            partitions= PropertiesParser.getPropertyValueByName("partitions");
+//            startOption= PropertiesParser.getPropertyValueByName("startOption");
         }
         catch (IOException ioe){
             ioe.printStackTrace();
         }
 
-        switch(getArgumentValue(args,"--action").toLowerCase()) {
+        switch(Tools.getArgumentValue(args,"--action").toLowerCase()) {
             case "produce":
                 if(topicName ==null){
                     try {
-                        topicName = getArgumentValue(args,"--topicName").toLowerCase();
+                        topicName = Tools.getArgumentValue(args,"--topicName").toLowerCase();
                         SimpleProducer.produce(brokers, topicName);
                     } catch (Exception e){
                         Message.NoTopicNameArgMessage();
@@ -38,7 +38,7 @@ public class Run {
                 int[] partitionNumbers = null;
                 if(topicName == null){
                     try {
-                        topicName = getArgumentValue(args,"--topicName").toLowerCase();
+                        topicName = Tools.getArgumentValue(args,"--topicName").toLowerCase();
                     } catch (Exception e){
                         Message.NoTopicNameArgMessage();
                         Message.consumeMessage();
@@ -48,7 +48,7 @@ public class Run {
 
                 if(startOption == null){
                     try {
-                        startOption = getArgumentValue(args,"--startOption").toLowerCase();
+                        startOption = Tools.getArgumentValue(args,"--startOption").toLowerCase();
                     } catch (Exception e){
                         Message.NoStartOptionArgMessage();
                         Message.consumeMessage();
@@ -58,14 +58,14 @@ public class Run {
 
                 if(partitions == null){
                     try {
-                        partitionNumbers = extractNumber(getArgumentValue(args,"--partitions"));
+                        partitionNumbers = Tools.extractNumber(Tools.getArgumentValue(args,"--partitions"));
                     } catch (Exception e){
                         Message.NoPartitionsArgMessage();
                         Message.consumeMessage();
                         break;
                     }
                 } else {
-                    partitionNumbers = extractNumber(partitions);
+                    partitionNumbers = Tools.extractNumber(partitions);
                 }
 
                 SimpleConsumer.consume(brokers, topicName, startOption, partitionNumbers);
@@ -77,25 +77,5 @@ public class Run {
                 Message.helpMessage();
                 break;
         }
-    }
-
-    public static String getArgumentValue(String[] args, String value){
-        if(Arrays.asList(args).contains(value)){
-            return args[Arrays.asList(args).indexOf(value)+1];
-        } else {
-            return null;
-        }
-    }
-
-    public static int[] extractNumber(String str) {
-        int i = 0;
-        String[] stringTab = str.toLowerCase().split(",");
-        int[] tab = new int[stringTab.length];
-
-        for (String value: str.toLowerCase().split(",")) {
-            tab[i] = Integer.parseInt(value);
-            i++;
-        }
-        return tab;
     }
 }
