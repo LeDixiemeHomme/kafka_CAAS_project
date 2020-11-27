@@ -1,5 +1,6 @@
 //import util.properties packages
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -11,6 +12,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 
 //import ProducerRecord packages
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.PartitionInfo;
 
 import javax.swing.text.StyledEditorKit;
 
@@ -36,11 +38,19 @@ public class SimpleProducer {
 
         Producer<String, String> producer = new KafkaProducer<>(props);
 
+        List<PartitionInfo> list = producer.partitionsFor(topicName);
+
+        for (PartitionInfo info : list
+             ) {
+            System.out.println("info : " + info);
+        }
+
         boolean sortie = false;
 
         while(!sortie){
 
             Scanner scanner = new Scanner( System.in );
+            System.out.print("> ");
             String line = scanner.next();
             if(line.equals("exit")){
                 sortie = true;

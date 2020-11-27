@@ -1,4 +1,6 @@
+PropertiesParser.class
 Run.class
-Utils.class
+Message.class
+Tools.class
 SimpleConsumer.class
 SimpleProducer.class

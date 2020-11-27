@@ -12,9 +12,9 @@ public class Run {
 
         try{
             brokers = PropertiesParser.getPropertyValueByName("brokers");
-//            topicName= PropertiesParser.getPropertyValueByName("topicName");
-//            partitions= PropertiesParser.getPropertyValueByName("partitions");
-//            startOption= PropertiesParser.getPropertyValueByName("startOption");
+            topicName= PropertiesParser.getPropertyValueByName("topicName");
+            partitions= PropertiesParser.getPropertyValueByName("partitions");
+            startOption= PropertiesParser.getPropertyValueByName("startOption");
         }
         catch (IOException ioe){
             ioe.printStackTrace();
