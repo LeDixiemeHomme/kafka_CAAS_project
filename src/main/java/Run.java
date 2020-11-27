@@ -1,9 +1,6 @@
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
 
 public class Run {
     public static void main(String[] args) throws Exception {
@@ -14,10 +11,10 @@ public class Run {
         String startOption = null;
 
         try{
-            brokers = Utils.getPropertyValueByName("brokers");
-            topicName= Utils.getPropertyValueByName("topicName");
-            partitions= Utils.getPropertyValueByName("partitions");
-            startOption= Utils.getPropertyValueByName("startOption");
+            brokers = PropertiesParser.getPropertyValueByName("brokers");
+            topicName= PropertiesParser.getPropertyValueByName("topicName");
+            partitions= PropertiesParser.getPropertyValueByName("partitions");
+            startOption= PropertiesParser.getPropertyValueByName("startOption");
         }
         catch (IOException ioe){
             ioe.printStackTrace();
