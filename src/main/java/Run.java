@@ -19,23 +19,34 @@ public class Run {
         catch (IOException ioe){
             ioe.printStackTrace();
         }
+        int[] partitionNumbers = null;
 
         switch(Tools.getArgumentValue(args,"--action").toLowerCase()) {
             case "produce":
                 if(topicName ==null){
                     try {
                         topicName = Tools.getArgumentValue(args,"--topicName").toLowerCase();
-                        SimpleProducer.produce(brokers, topicName);
                     } catch (Exception e){
                         Message.NoTopicNameArgMessage();
                         break;
                     }
                 }
 
-                SimpleProducer.produce(brokers, topicName);
+                if(partitions == null){
+                    try {
+                        partitionNumbers = Tools.extractNumber(Tools.getArgumentValue(args,"--partitions"));
+                    } catch (Exception e){
+                        Message.NoPartitionsArgMessage();
+                        Message.consumeMessage();
+                        break;
+                    }
+                } else {
+                    partitionNumbers = Tools.extractNumber(partitions);
+                }
+
+                SimpleProducer.produce(brokers, topicName, partitionNumbers);
                 break;
             case "consume":
-                int[] partitionNumbers = null;
                 if(topicName == null){
                     try {
                         topicName = Tools.getArgumentValue(args,"--topicName").toLowerCase();

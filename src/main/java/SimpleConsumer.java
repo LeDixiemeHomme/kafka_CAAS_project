@@ -28,7 +28,7 @@ public class SimpleConsumer {
         props.put("value.deserializer",
                 "org.apache.kafka.common.serialization.StringDeserializer");
 
-        Set<TopicPartition> partSet = new HashSet<TopicPartition>();
+        Set<TopicPartition> partSet = new HashSet<>();
 
         for(int partitionNumber : partitionNumbers){
             partSet.add(new TopicPartition(topicName, partitionNumber));
@@ -67,7 +67,7 @@ public class SimpleConsumer {
                     System.out.println("    This partition starts at this offset : " + beginningOffset);
                     System.out.println("    This partition ends at this offset : " + endOffset + "\n");
 
-                    System.out.println("You can now choose the consumer offset");
+                    System.out.println("You can now choose the consumer offset.");
                     System.out.println("Your options are :");
                     System.out.println("    - Type \"a number\" between " + beginningOffset + " and " + endOffset + "" +
                             " to set the offset.");
