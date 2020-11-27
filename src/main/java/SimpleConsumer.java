@@ -1,9 +1,11 @@
 import java.io.IOException;
+import java.time.Duration;
 import java.util.*;
 
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
 
 public class SimpleConsumer {
@@ -26,26 +28,74 @@ public class SimpleConsumer {
         props.put("value.deserializer",
                 "org.apache.kafka.common.serialization.StringDeserializer");
 
-        List<TopicPartition> partitions = new ArrayList<>();
+        Set<TopicPartition> partSet = new HashSet<TopicPartition>();
 
         for(int partitionNumber : partitionNumbers){
-            partitions.add(new TopicPartition(topicName, partitionNumber));
+            partSet.add(new TopicPartition(topicName, partitionNumber));
         }
 
-        partitions.toString();
-
-        KafkaConsumer<String, String> consumer = new KafkaConsumer
-                <String, String>(props);
-
+        KafkaConsumer<String, String> consumer = new KafkaConsumer<String, String>(props);
 
         switch(startOption) {
             case "from-beginning":
-                consumer.assign(partitions);
-                consumer.seekToBeginning(partitions);
+                consumer.assign(partSet);
+                consumer.seekToBeginning(partSet);
                 break;
             case "regular":
-                consumer.assign(partitions);
-                consumer.seekToEnd(partitions);
+                consumer.assign(partSet);
+                consumer.seekToEnd(partSet);
+                break;
+            case "manual":
+                consumer.assign(partSet);
+
+                System.out.println("Manual mode choose for this consumer.");
+
+                Map<TopicPartition, Long> beginningOffsets;
+                beginningOffsets = consumer.beginningOffsets(partSet);
+                Map<TopicPartition, Long> endOffsets;
+                endOffsets = consumer.endOffsets(partSet);
+
+                System.out.println("Partitions state :");
+                for (TopicPartition partition : partSet) {
+
+                    Long beginningOffset = beginningOffsets.get(partition);
+                    Long endOffset = endOffsets.get(partition);
+                    System.out.println("    partition : " + partition.toString());
+                    System.out.println("    This consumer offset for this partition : " + consumer.position(partition));
+                    System.out.println("    This partition starts at this offset : " + beginningOffset);
+                    System.out.println("    This partition ends at this offset : " + endOffset + "\n");
+
+                    System.out.println("You can now choose the consumer offset");
+                    System.out.println("Your options are :");
+                    System.out.println("    - Type \"a number\" between " + beginningOffset + " and " + endOffset + "" +
+                            " to set the offset.");
+                    System.out.println("    - Type \"exit\" to quit.");
+
+                    boolean exit = false;
+                    while(!exit){
+                        Scanner scanner = new Scanner( System.in );
+                        System.out.print("> ");
+                        String line = scanner.next();
+                        if(line.equals("exit")){
+                            System.out.println("The offset won't be changed for the partition " + partition.toString() + " .");
+                            break;
+                        } else if (Long.parseLong(line) <= endOffset && Long.parseLong(line) >= beginningOffset){
+                            try
+                            {
+                                consumer.seek(partition, Long.parseLong(line));
+                            }
+                            catch (Exception ex)
+                            {
+                                System.out.print(ex.getMessage());
+                                throw new IOException(ex.toString());
+                            }
+                            exit = true;
+                        } else {
+                            System.out.println("Wrong type of value typed !");
+                        }
+                    }
+                }
+
                 break;
             default:
                 Message.NoRegistredValueForStartOptionArgMessage();
@@ -54,22 +104,18 @@ public class SimpleConsumer {
                 break;
         }
 
-
-
-//        consumer.assign(partitions);
 //
-//        consumer.seek(new TopicPartition(topicName, 0), 1);
-//        consumer.seek(new TopicPartition(topicName, 1), 1);
 
         //Kafka Consumer subscribes list of topics here.
 //        consumer.subscribe(Arrays.asList(topicName));
 
         //print the topic name
         System.out.println("Subscribed to topic " + topicName);
-        int i = 0;
+
+        Duration duration = Duration.ofMillis(100);
 
         while (true) {
-            ConsumerRecords<String, String> records = consumer.poll(100);
+            ConsumerRecords<String, String> records = consumer.poll(duration);
             for (ConsumerRecord<String, String> record : records)
 
                 // print the offset,key and value for the consumer records.
