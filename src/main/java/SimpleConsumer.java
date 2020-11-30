@@ -63,9 +63,9 @@ public class SimpleConsumer {
                     Long beginningOffset = beginningOffsets.get(partition);
                     Long endOffset = endOffsets.get(partition);
                     System.out.println("    partition : " + partition.toString());
-                    System.out.println("    This consumer offset for this partition : " + consumer.position(partition));
-                    System.out.println("    This partition starts at this offset : " + beginningOffset);
-                    System.out.println("    This partition ends at this offset : " + endOffset + "\n");
+                    System.out.println("    The consumer offset for this partition : " + consumer.position(partition));
+                    System.out.println("    This partition starts at the offset : " + beginningOffset);
+                    System.out.println("    This partition ends at the offset : " + endOffset + "\n");
 
                     System.out.println("You can now choose the consumer offset.");
                     System.out.println("Your options are :");
@@ -79,7 +79,7 @@ public class SimpleConsumer {
                         System.out.print("> ");
                         String line = scanner.next();
                         if(line.equals("exit")){
-                            System.out.println("The offset won't be changed for the partition " + partition.toString() + " .");
+                            System.out.println("The offset won't be changed for the partition : " + partition.toString() + " .");
                             break;
                         } else if (Tools.isNumeric(line)) {
                             if (Long.parseLong(line) <= endOffset && Long.parseLong(line) >= beginningOffset){
