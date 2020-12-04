@@ -1,91 +1,36 @@
 
-import java.io.IOException;
-import java.util.Arrays;
+import java.util.Hashtable;
 
+//Create java class named “Run”, this class contains the main function
 public class Run {
+
     public static void main(String[] args) throws Exception {
 
-        String brokers = null;
-        String topicName = null;
-        String partitions = null;
-        String startOption = null;
+        //Create a String[] to store arguments name
+        String[] argumentTags = {"action", "brokers", "topicName", "partitions", "startOption"};
 
-        try{
-            brokers = PropertiesParser.getPropertyValueByName("brokers");
-            topicName= PropertiesParser.getPropertyValueByName("topicName");
-            partitions= PropertiesParser.getPropertyValueByName("partitions");
-            startOption= PropertiesParser.getPropertyValueByName("startOption");
-        }
-        catch (IOException ioe){
-            ioe.printStackTrace();
-        }
-        int[] partitionNumbers = null;
+        //Create a String to store pathPropertyFile argument value or " " if this argument isn't in the command
+        String path = Tools.getArgumentValueByTag(args, "pathPropertyFile");
 
-        switch(Tools.getArgumentValue(args,"--action").toLowerCase()) {
+        //Create a Hashtable<String, String> to store arguments name and its value
+        Hashtable<String, String> argumentsPlusValue;
+
+        argumentsPlusValue = Tools.populateArgumentHashtable(args, argumentTags, path);
+        Tools.argumentValueChecker(argumentsPlusValue);
+
+        //Initiate a switch for every action value possible : produce | consume | help
+        switch(argumentsPlusValue.get("action").toLowerCase()) {
             case "produce":
-                if(topicName ==null){
-                    try {
-                        topicName = Tools.getArgumentValue(args,"--topicName").toLowerCase();
-                    } catch (Exception e){
-                        Message.NoTopicNameArgMessage();
-                        break;
-                    }
-                }
-
-                if(partitions == null){
-                    try {
-                        partitionNumbers = Tools.extractNumber(Tools.getArgumentValue(args,"--partitions"));
-                    } catch (Exception e){
-                        Message.NoPartitionsArgMessage();
-                        Message.consumeMessage();
-                        break;
-                    }
-                } else {
-                    partitionNumbers = Tools.extractNumber(partitions);
-                }
-
-                SimpleProducer.produce(brokers, topicName, partitionNumbers);
+                SimpleProducer.produce(argumentsPlusValue);
                 break;
             case "consume":
-                if(topicName == null){
-                    try {
-                        topicName = Tools.getArgumentValue(args,"--topicName").toLowerCase();
-                    } catch (Exception e){
-                        Message.NoTopicNameArgMessage();
-                        Message.consumeMessage();
-                        break;
-                    }
-                }
-
-                if(startOption == null){
-                    try {
-                        startOption = Tools.getArgumentValue(args,"--startOption").toLowerCase();
-                    } catch (Exception e){
-                        Message.NoStartOptionArgMessage();
-                        Message.consumeMessage();
-                        break;
-                    }
-                }
-
-                if(partitions == null){
-                    try {
-                        partitionNumbers = Tools.extractNumber(Tools.getArgumentValue(args,"--partitions"));
-                    } catch (Exception e){
-                        Message.NoPartitionsArgMessage();
-                        Message.consumeMessage();
-                        break;
-                    }
-                } else {
-                    partitionNumbers = Tools.extractNumber(partitions);
-                }
-
-                SimpleConsumer.consume(brokers, topicName, startOption, partitionNumbers);
+                SimpleConsumer.consume(argumentsPlusValue);
                 break;
             case "help":
                 Message.helpMessage();
                 break;
             default:
-                Message.helpMessage();
+                Message.defaultMessage();
                 break;
         }
     }

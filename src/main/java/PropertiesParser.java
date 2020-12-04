@@ -1,21 +1,20 @@
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Properties;
 
+//Create java class named “PropertiesParser”
 public class PropertiesParser {
 
-    public static Properties getProperties() throws IOException {
-
+    //This function extract the content from the config.properties file and returns a Properties object
+    public static Properties getProperties(String propertyFile) throws IOException {
         //to load application's properties, we use this class
         Properties mainProperties = new Properties();
 
         FileInputStream file;
 
-        //the base folder is ./, the root of the main.properties file
-        String path = "./config.properties";
-
-        //load the file handle for main.properties
-        file = new FileInputStream(path);
+        //load the file handle for propertyFile
+        file = new FileInputStream(propertyFile);
 
         //load all the properties from this file
         mainProperties.load(file);
@@ -26,14 +25,14 @@ public class PropertiesParser {
         return mainProperties;
     }
 
-    public static String getPropertyValueByName(String name) throws IOException {
-        String value = null;
+    public static String getPropertyValueByName(String propertyFile, String name) throws IOException {
+        String value;
 
-        Properties mainProperties = getProperties();
+        Properties mainProperties = getProperties(propertyFile);
 
         value = mainProperties.getProperty(name);
 
-        return value;
+        return Objects.requireNonNullElse(value, "null");
     }
 
 }

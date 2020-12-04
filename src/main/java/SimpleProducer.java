@@ -10,25 +10,27 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 
 //import ProducerRecord packages
 import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.PartitionInfo;
-import org.apache.kafka.common.TopicPartition;
 
-import javax.swing.text.StyledEditorKit;
+//import PartitionInfo packages
+import org.apache.kafka.common.PartitionInfo;
+
+//import TopicPartition packages
+import org.apache.kafka.common.TopicPartition;
 
 //Create java class named “SimpleProducer”
 public class SimpleProducer {
 
-    public static void produce(String brokers, String topicName, int[] partitionNumbers) throws Exception{
+    //This fonction process the Hashtable<String, String> and start a KafkaProducer according to arguments values
+    public static void produce(Hashtable<String, String> argumentsPlusValue) throws Exception{
 
-        System.out.println("brokers = " + brokers);
-        System.out.println("topicName = " + topicName);
-        System.out.println("partitionNumbers = " + Arrays.toString(partitionNumbers));
+        //Create a int[] to store partition number from the string argument "partitions"
+        int[] partitionNumbers = Tools.extractNumber(argumentsPlusValue.get("partitions"));
 
-        // create instance for properties to access producer configs
+        //Create a Properties object used to create the KafkaProducer object
         Properties props = new Properties();
 
         //Assign localhost id
-        props.put("bootstrap.servers", brokers);
+        props.put("bootstrap.servers", argumentsPlusValue.get("brokers"));
 
         props.put("key.serializer",
                 "org.apache.kafka.common.serialization.StringSerializer");
@@ -38,44 +40,43 @@ public class SimpleProducer {
 
         Set<TopicPartition> partSet = new HashSet<>();
 
+        //Iterate for each number in the partitionNumber tab
         for(int partitionNumber : partitionNumbers){
-            partSet.add(new TopicPartition(topicName, partitionNumber));
+            //Fill a Set<TopicPartition> entry with the topicName and the current partition number
+            partSet.add(new TopicPartition(argumentsPlusValue.get("topicName"), partitionNumber));
         }
 
+        //Create a KafkaProducer object with props
         Producer<String, String> producer = new KafkaProducer<>(props);
 
-        List<PartitionInfo> list = producer.partitionsFor(topicName);
+        //Create a PartitionInfo list which will contains every partition inside the topic aimed
+        List<PartitionInfo> list = producer.partitionsFor(argumentsPlusValue.get("topicName"));
 
-        System.out.println("Your messages will be sent to the topic : " + topicName);
-        for (PartitionInfo info : list) {
-            for (TopicPartition partition : partSet) {
-                if(partition.partition() == info.partition()) {
-                    System.out.println("At this partition : " + partition.toString());
-                }
-            }
-        }
+        Message.messageEveryPartitionInTopic(argumentsPlusValue.get("topicName"), list, partSet);
 
-        System.out.println("You can now type your message.");
-        System.out.println("Your options are :");
-        System.out.println("    - Type \"a string\".");
-        System.out.println("    - Type \"exit\" to quit.");
+        Message.messageChoiceProducerInput();
 
+        //Start while loop to get user inputs
         boolean sortie = false;
-
         while(!sortie){
-
             Scanner scanner = new Scanner( System.in );
             System.out.print("> ");
+            //Change delimiter " " to "\n", it will allows the user to input " " in his message input
             scanner.useDelimiter("\n");
             String line = scanner.next();
             if(line.equals("exit")){
+                //If the input equals to "exit" the program stop
                 sortie = true;
             } else {
-                try
-                {
-                    System.out.println(line);
+                //If the input isn't equals to "exit" the program stop
+                try {
+                    //Iterate for each partition number inside the int[] partitionNumbers
                     for (int num: partitionNumbers) {
-                        producer.send(new ProducerRecord<String, String>(topicName,num, null,line)).get();
+                        //Create a ProducerRecord object with the topic name, the current partition number, a key value equals to null and the user input
+                        ProducerRecord record = new ProducerRecord<String, String>(argumentsPlusValue.get("topicName"),num, null,line);
+                        //Asynchronously send the ProducerRecord object record to the topic
+                        producer.send(record).get();
+                        System.out.println("Message sent successfully to partition "+ num + ".");
                     }
                 }
                 catch (Exception ex)
@@ -83,9 +84,9 @@ public class SimpleProducer {
                     System.out.print(ex.getMessage());
                     throw new IOException(ex.toString());
                 }
-                System.out.println("Message sent successfully");
             }
         }
+        //Close the producer
         producer.close();
     }
 }
