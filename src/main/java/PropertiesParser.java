@@ -25,6 +25,7 @@ public class PropertiesParser {
         return mainProperties;
     }
 
+    //This function take a tag name and a file name and return the value for the tag name from the file
     public static String getPropertyValueByName(String propertyFile, String name) throws IOException {
         String value;
 

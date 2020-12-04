@@ -16,7 +16,7 @@ import org.apache.kafka.common.TopicPartition;
 //Create java class named “SimpleConsumer”
 public class SimpleConsumer {
 
-    //This fonction process the Hashtable<String, String> and start a KafkaConsumer according to arguments values
+    //This function processes the Hashtable<String, String> and starts a KafkaConsumer according to arguments values
     public static void consume(Hashtable<String, String> argumentsPlusValue) throws Exception {
 
         //Create a int[] to store partition number from the string argument "partitions"
@@ -126,7 +126,7 @@ public class SimpleConsumer {
                 break;
             default:
                 //Display messages if the value for the argument startOption isn't regular | from-beginning | manual
-                Message.noRegistredValueForStartOptionArgMessage();
+                Message.unrecognizedValueForStartOptionArgMessage();
                 Message.consumeMessage();
                 consumer.subscribe(Collections.singletonList(argumentsPlusValue.get("topicName")));
                 break;

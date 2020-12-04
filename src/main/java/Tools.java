@@ -6,7 +6,7 @@ import java.util.Map;
 //Create java class named “Tools”, this class contains usefull function that can be used in every other class
 public class Tools {
 
-    //This function returns true if the String parameter can be parse into a int, false of not
+    //This function returns true if the String parameter can be parse into an int, false if not
     public static boolean isNumeric(String line){
         try {
             // checking valid integer using parseInt() method 
@@ -51,7 +51,7 @@ public class Tools {
         return tab;
     }
 
-    //this fonction return a Hashtable<String, String> filled with the argument tag and its value
+    //this function return a Hashtable<String, String> filled with the argument tag and its value
     public static Hashtable<String, String> populateArgumentHashtable(String[] args, String[] argumentTags, String path) {
 
         Hashtable<String, String> argumentsPlusValue = new Hashtable<>();
@@ -125,6 +125,20 @@ public class Tools {
         }
 
         if(exit) {
+            switch (argumentsPlusValue.get("action")) {
+                case "produce":
+                    Message.produceMessage();
+                    break;
+                case "consume":
+                    Message.consumeMessage();
+                    break;
+                case "help":
+                    Message.helpMessage();
+                    break;
+                default:
+                    Message.defaultMessage();
+                    break;
+            }
             System.out.println("\nEnd of the programme.");
             System.exit(0);
         }

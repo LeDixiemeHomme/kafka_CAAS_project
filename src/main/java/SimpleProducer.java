@@ -20,7 +20,7 @@ import org.apache.kafka.common.TopicPartition;
 //Create java class named “SimpleProducer”
 public class SimpleProducer {
 
-    //This fonction process the Hashtable<String, String> and start a KafkaProducer according to arguments values
+    //This function processes the Hashtable<String, String> and starts a KafkaProducer according to arguments values
     public static void produce(Hashtable<String, String> argumentsPlusValue) throws Exception{
 
         //Create a int[] to store partition number from the string argument "partitions"
