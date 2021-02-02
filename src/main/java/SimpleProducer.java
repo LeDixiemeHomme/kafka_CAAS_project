@@ -61,9 +61,10 @@ public class SimpleProducer {
         while(!sortie){
             Scanner scanner = new Scanner( System.in );
             System.out.print("> ");
-            //Change delimiter " " to "\n", it will allows the user to input " " in his message input
-            scanner.useDelimiter("\n");
-            String line = scanner.next();
+
+            String line = "";
+            line += scanner.nextLine();
+
             if(line.equals("exit")){
                 //If the input equals to "exit" the program stop
                 sortie = true;

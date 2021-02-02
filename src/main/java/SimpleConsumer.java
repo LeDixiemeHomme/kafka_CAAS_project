@@ -4,6 +4,7 @@ import java.time.Duration;
 import java.util.*;
 
 //import KafkaProducer packages
+import elasticsearch.HighLevelClientForKafka;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
 //import ConsumerRecord and ConsumerRecords packages
@@ -18,6 +19,12 @@ public class SimpleConsumer {
 
     //This function processes the Hashtable<String, String> and starts a KafkaConsumer according to arguments values
     public static void consume(Hashtable<String, String> argumentsPlusValue) throws Exception {
+
+        int elasticPort = Integer.valueOf(argumentsPlusValue.get("elasticsearch").split(":")[1]);
+
+        String elasticHost = argumentsPlusValue.get("elasticsearch").split(":")[0];
+
+        HighLevelClientForKafka client = new HighLevelClientForKafka(elasticPort, elasticHost);
 
         //Create a int[] to store partition number from the string argument "partitions"
         int[] partitionNumbers = Tools. extractNumber(argumentsPlusValue.get("partitions"));
@@ -142,10 +149,12 @@ public class SimpleConsumer {
             then retries to fetch */
             ConsumerRecords<String, String> records = consumer.poll(duration);
             //Iterate for each ConsumerRecord fetched
-            for (ConsumerRecord<String, String> record : records)
+            for (ConsumerRecord<String, String> record : records){
                 // print the offset,key and value for the consumer records.
                 System.out.printf("topic = %s; partition = %d; offset = %d; key = %s; value = %s\n",
                         record.topic(), record.partition(), record.offset(), record.key(), record.value());
+                client.pushKafkaMessageToElasticIndex(record.topic(), (int) record.offset(), record.value());
+            }
         }
     }
 }

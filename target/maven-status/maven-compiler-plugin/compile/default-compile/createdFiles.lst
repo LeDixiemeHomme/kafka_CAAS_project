@@ -1,6 +1,7 @@
-PropertiesParser.class
 Run.class
+SimpleConsumer.class
+PropertiesParser.class
 Message.class
 Tools.class
-SimpleConsumer.class
+elasticsearch\HighLevelClientForKafka.class
 SimpleProducer.class

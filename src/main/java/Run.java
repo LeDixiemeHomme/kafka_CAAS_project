@@ -7,7 +7,7 @@ public class Run {
     public static void main(String[] args) throws Exception {
 
         //Create a String[] to store arguments name
-        String[] argumentTags = {"action", "brokers", "topicName", "partitions", "startOption"};
+        String[] argumentTags = {"action", "brokers", "topicName", "partitions", "startOption", "elasticsearch"};
 
         //Create a String to store pathPropertyFile argument value or " " if this argument isn't in the command
         String path = Tools.getArgumentValueByTag(args, "pathPropertyFile");

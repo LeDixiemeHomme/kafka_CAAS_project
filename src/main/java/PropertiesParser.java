@@ -33,7 +33,13 @@ public class PropertiesParser {
 
         value = mainProperties.getProperty(name);
 
-        return Objects.requireNonNullElse(value, "null");
+        if(value != null) {
+            return value;
+        } else {
+            return "null";
+        }
+
+//        return Objects.requireNonNullElse(value, "null");
     }
 
 }

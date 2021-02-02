@@ -1,6 +1,7 @@
-C:\Users\benoi\Dev\VM_Ubuntu16.04\CAas\kafka_CAAS_project\src\main\java\SimpleProducer.java
-C:\Users\benoi\Dev\VM_Ubuntu16.04\CAas\kafka_CAAS_project\src\main\java\PropertiesParser.java
-C:\Users\benoi\Dev\VM_Ubuntu16.04\CAas\kafka_CAAS_project\src\main\java\SimpleConsumer.java
-C:\Users\benoi\Dev\VM_Ubuntu16.04\CAas\kafka_CAAS_project\src\main\java\Message.java
-C:\Users\benoi\Dev\VM_Ubuntu16.04\CAas\kafka_CAAS_project\src\main\java\Run.java
-C:\Users\benoi\Dev\VM_Ubuntu16.04\CAas\kafka_CAAS_project\src\main\java\Tools.java
+C:\Users\benoi\Dev\VM_Ubuntu16.04\CAas\Kafka\kafka_CAAS_project\src\main\java\PropertiesParser.java
+C:\Users\benoi\Dev\VM_Ubuntu16.04\CAas\Kafka\kafka_CAAS_project\src\main\java\Tools.java
+C:\Users\benoi\Dev\VM_Ubuntu16.04\CAas\Kafka\kafka_CAAS_project\src\main\java\Run.java
+C:\Users\benoi\Dev\VM_Ubuntu16.04\CAas\Kafka\kafka_CAAS_project\src\main\java\SimpleProducer.java
+C:\Users\benoi\Dev\VM_Ubuntu16.04\CAas\Kafka\kafka_CAAS_project\src\main\java\Message.java
+C:\Users\benoi\Dev\VM_Ubuntu16.04\CAas\Kafka\kafka_CAAS_project\src\main\java\elasticsearch\HighLevelClientForKafka.java
+C:\Users\benoi\Dev\VM_Ubuntu16.04\CAas\Kafka\kafka_CAAS_project\src\main\java\SimpleConsumer.java
